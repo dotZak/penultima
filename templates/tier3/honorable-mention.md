@@ -8,6 +8,6 @@ schema_version: "1.0"
 
 <!-- 200–500 words covering:
   - What the language is and why it exists
-  - The 1–3 insights it offers relevant to Penultima's design
+  - The 1–3 insights it offers relevant to programming language design
   - Why it does not warrant deeper analysis
 -->

@@ -307,9 +307,9 @@ date: "YYYY-MM-DD"
 
 <!-- 3–5 things this language does worse than alternatives or gets fundamentally wrong. Be specific. -->
 
-### Lessons for Penultima
+### Lessons for Language Design
 
-<!-- What should a new language learn from this? Avoid? What remains open? -->
+<!-- What should a new language learn from this? Avoid? What remains open? Lessons must be generic to language design, not specific to any one project. -->
 
 ### Dissenting Views
 

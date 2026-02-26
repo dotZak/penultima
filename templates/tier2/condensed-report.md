@@ -24,7 +24,7 @@ date: "YYYY-MM-DD"
 
 ## 4. Transferable Insights
 
-<!-- Specific design decisions, patterns, or approaches that Penultima should consider adopting, adapting, or avoiding. -->
+<!-- Specific design decisions, patterns, or approaches that any language designer should consider adopting, adapting, or avoiding. -->
 
 ---
 

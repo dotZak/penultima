@@ -1,10 +1,10 @@
-# Penultima Common Report Schema
+# Common Report Schema
 
-**Version:** 1.0
+**Version:** 1.1
 **Status:** Draft
 **Last updated:** 2026-02-26
 
-This document defines the structure, content requirements, and evidence standards for all documents produced during the Penultima deliberation process. It covers three document types:
+This document defines the structure, content requirements, and evidence standards for all documents produced during the language analysis deliberation process. It covers three document types:
 
 1. **Internal Council Report** — produced by each Tier 1 language council (Phase 2)
 2. **Cross-Review Document** — produced by one council reviewing another language (Phase 4)
@@ -226,7 +226,7 @@ date: "<YYYY-MM-DD>"
 
 - **Greatest strengths.** The 3–5 things this language does better than most or all alternatives. Be specific.
 - **Greatest weaknesses.** The 3–5 things this language does worse than alternatives or gets fundamentally wrong. Be specific.
-- **Lessons for Penultima.** What should a new language learn from this language? What should it avoid? What remains an open question?
+- **Lessons for Language Design.** What should a new language learn from this language? What should it avoid? What remains an open question? These lessons must be generic to programming language design, not specific to any one project.
 - **Dissenting views.** Any significant disagreements within the council that were not resolved. State each position and the reasoning behind it.
 
 ---
@@ -305,9 +305,9 @@ For each section of the original Internal Council Report, the council addresses:
 - **Defended positions.** Points where the council considered cross-review criticism and maintained its original assessment, with additional evidence or reasoning.
 - **New insights.** Points raised by cross-reviewers that the council had not considered, and the council's assessment of their validity.
 
-#### Updated Lessons for Penultima
+#### Updated Lessons for Language Design
 
-Revised synthesis reflecting what the council now believes Penultima should learn from its language, informed by the full deliberation.
+Revised synthesis reflecting the council's updated lessons for programming language design, informed by the full deliberation. These lessons must be generic — applicable to anyone designing a language.
 
 ---
 
@@ -388,7 +388,7 @@ date: "<YYYY-MM-DD>"
 1. **Identity and Intent** — Same as Tier 1, Section 1. Abbreviated.
 2. **Key Innovations** — What ideas did this language introduce or popularize that influenced subsequent languages? What remains relevant today?
 3. **Key Failures** — What did this language get wrong, and what can be learned from those failures?
-4. **Transferable Insights** — Specific design decisions, patterns, or approaches that Penultima should consider adopting, adapting, or avoiding.
+4. **Transferable Insights** — Specific design decisions, patterns, or approaches that any language designer should consider adopting, adapting, or avoiding.
 5. **References** — Sources cited.
 
 Target length: 2,000–4,000 words.
@@ -410,7 +410,7 @@ schema_version: "1.0"
 A single section of 200–500 words covering:
 
 - What the language is and why it exists.
-- The one to three insights it offers that are relevant to Penultima's design.
+- The one to three insights it offers that are relevant to programming language design.
 - Why it does not warrant deeper analysis.
 
 ---

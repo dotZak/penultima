@@ -103,9 +103,9 @@ date: "YYYY-MM-DD"
 
 ---
 
-## Updated Lessons for Penultima
+## Updated Lessons for Language Design
 
-<!-- Revised synthesis reflecting what the council now believes Penultima should learn, informed by the full deliberation. -->
+<!-- Revised synthesis reflecting the council's updated lessons for language design, informed by the full deliberation. These lessons must be generic — applicable to anyone designing a language. -->
 
 ---
 
