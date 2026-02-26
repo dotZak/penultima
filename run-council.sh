@@ -67,6 +67,74 @@ seconds_to_human() {
   fi
 }
 
+# Background progress monitor — watches output files and logs
+MONITOR_PID=""
+
+start_monitor() {
+  local stage_name="$1"
+  local stage_start="$2"
+  shift 2
+  # Remaining args: output_path label output_path label ...
+  local monitor_paths=("$@")
+
+  (
+    while true; do
+      sleep 15
+      local elapsed=$((SECONDS - stage_start))
+      local status_line="  ${BLUE}⏱${NC} $(seconds_to_human $elapsed) │"
+
+      local i=0
+      while [ $i -lt ${#monitor_paths[@]} ]; do
+        local path="${monitor_paths[$i]}"
+        local label="${monitor_paths[$((i+1))]}"
+        i=$((i + 2))
+
+        if [ -f "$path" ]; then
+          local words=$(wc -w < "$path" 2>/dev/null || echo "0")
+          if [ "$words" -gt 0 ]; then
+            status_line+=" ${GREEN}${label}:${words}w${NC}"
+          else
+            status_line+=" ${YELLOW}${label}:writing${NC}"
+          fi
+        else
+          status_line+=" ${CYAN}${label}:…${NC}"
+        fi
+      done
+
+      echo -e "$status_line"
+    done
+  ) &
+  MONITOR_PID=$!
+}
+
+stop_monitor() {
+  if [ -n "$MONITOR_PID" ] && kill -0 "$MONITOR_PID" 2>/dev/null; then
+    kill "$MONITOR_PID" 2>/dev/null
+    wait "$MONITOR_PID" 2>/dev/null || true
+    MONITOR_PID=""
+  fi
+}
+
+# Summarize an agent's log — extract tool usage and token info
+summarize_log() {
+  local log_file="$1"
+  local agent_name="$2"
+  if [ ! -f "$log_file" ]; then return; fi
+
+  # Try to extract cost/token info from the log
+  local tokens=$(grep -oi '[0-9,]\+\s*tokens\?' "$log_file" 2>/dev/null | tail -1)
+  local cost=$(grep -oi '\$[0-9.]\+' "$log_file" 2>/dev/null | tail -1)
+  local tools_used=$(grep -ci 'tool\|WebSearch\|WebFetch\|Read\|Write\|Edit' "$log_file" 2>/dev/null || echo "?")
+
+  local summary=""
+  if [ -n "$cost" ]; then summary+=" cost:${cost}"; fi
+  if [ -n "$tokens" ]; then summary+=" (${tokens})"; fi
+
+  if [ -n "$summary" ]; then
+    echo -e "    ${BLUE}└${NC}${summary}"
+  fi
+}
+
 # Run a claude agent with retry on failure (including token limit)
 run_agent() {
   local prompt_file="$1"
@@ -114,24 +182,33 @@ IMPORTANT: A previous attempt to complete this task ran out of context. The part
 }
 
 # Run a stage of parallel agents, with progress tracking
+# Args: stage_name [prompt_file agent_name output_file] ...
 run_parallel_stage() {
   local stage_name="$1"
   shift
-  # Remaining args are pairs: prompt_file agent_name prompt_file agent_name ...
+  # Remaining args are triples: prompt_file agent_name output_file ...
   local pids=()
   local names=()
+  local outputs=()
+  local monitor_args=()
   local start_time=$SECONDS
 
   while [ $# -gt 0 ]; do
     local prompt_file="$1"
     local agent_name="$2"
-    shift 2
+    local output_file="$3"
+    shift 3
 
     print_agent_start "${agent_name}"
     run_agent "${prompt_file}" "${agent_name}" &
     pids+=($!)
     names+=("${agent_name}")
+    outputs+=("${output_file}")
+    monitor_args+=("${output_file}" "${agent_name}")
   done
+
+  # Start background progress monitor
+  start_monitor "${stage_name}" $start_time "${monitor_args[@]}"
 
   # Wait for all and track results
   local all_ok=true
@@ -143,8 +220,12 @@ run_parallel_stage() {
       failed_agents+=("${names[$i]}")
     else
       print_agent_done "${names[$i]}" "ok"
+      summarize_log "logs/${LANG_SLUG}/${names[$i]}.log" "${names[$i]}"
     fi
   done
+
+  # Stop monitor
+  stop_monitor
 
   local elapsed=$((SECONDS - start_time))
   echo -e "  ${BLUE}⏱${NC}  Elapsed: $(seconds_to_human $elapsed)"
@@ -176,6 +257,12 @@ if ! command -v claude &> /dev/null; then
   exit 1
 fi
 
+# === Cleanup on exit ===
+cleanup() {
+  stop_monitor
+}
+trap cleanup EXIT
+
 # === Main execution ===
 
 TOTAL_START=$SECONDS
@@ -199,9 +286,13 @@ if [ -f "${BRIEF_PATH}" ]; then
 else
   print_agent_start "researcher"
   stage_start=$SECONDS
+  start_monitor "Researcher" $stage_start "${BRIEF_PATH}" "brief"
   if run_agent "agents/researcher.md" "researcher"; then
+    stop_monitor
     print_agent_done "researcher" "ok"
+    summarize_log "logs/${LANG_SLUG}/researcher.log" "researcher"
   else
+    stop_monitor
     print_agent_done "researcher" "fail"
     echo -e "  ${RED}${BOLD}FATAL: Cannot proceed without research brief.${NC}"
     exit 1
@@ -215,29 +306,33 @@ fi
 print_stage "1" "Council Members" "5 parallel perspectives (apologist, realist, detractor, historian, practitioner)"
 
 run_parallel_stage "Council Members" \
-  "agents/council/apologist.md" "apologist" \
-  "agents/council/realist.md" "realist" \
-  "agents/council/detractor.md" "detractor" \
-  "agents/council/historian.md" "historian" \
-  "agents/council/practitioner.md" "practitioner"
+  "agents/council/apologist.md" "apologist" "research/tier1/${LANG_SLUG}/council/apologist.md" \
+  "agents/council/realist.md" "realist" "research/tier1/${LANG_SLUG}/council/realist.md" \
+  "agents/council/detractor.md" "detractor" "research/tier1/${LANG_SLUG}/council/detractor.md" \
+  "agents/council/historian.md" "historian" "research/tier1/${LANG_SLUG}/council/historian.md" \
+  "agents/council/practitioner.md" "practitioner" "research/tier1/${LANG_SLUG}/council/practitioner.md"
 
 # ── Stage 2: Advisors ──
 print_stage "2" "Advisors" "4 parallel specialist reviews (compiler/runtime, security, pedagogy, systems architecture)"
 
 run_parallel_stage "Advisors" \
-  "agents/advisors/compiler-runtime.md" "compiler-runtime" \
-  "agents/advisors/security.md" "security" \
-  "agents/advisors/pedagogy.md" "pedagogy" \
-  "agents/advisors/systems-architecture.md" "systems-architecture"
+  "agents/advisors/compiler-runtime.md" "compiler-runtime" "research/tier1/${LANG_SLUG}/advisors/compiler-runtime.md" \
+  "agents/advisors/security.md" "security" "research/tier1/${LANG_SLUG}/advisors/security.md" \
+  "agents/advisors/pedagogy.md" "pedagogy" "research/tier1/${LANG_SLUG}/advisors/pedagogy.md" \
+  "agents/advisors/systems-architecture.md" "systems-architecture" "research/tier1/${LANG_SLUG}/advisors/systems-architecture.md"
 
 # ── Stage 3: Consensus ──
 print_stage "3" "Consensus" "Synthesizing all inputs into final council report"
 
 print_agent_start "consensus"
 stage_start=$SECONDS
+start_monitor "Consensus" $stage_start "research/tier1/${LANG_SLUG}/report.md" "report"
 if run_agent "agents/consensus.md" "consensus"; then
+  stop_monitor
   print_agent_done "consensus" "ok"
+  summarize_log "logs/${LANG_SLUG}/consensus.log" "consensus"
 else
+  stop_monitor
   print_agent_done "consensus" "fail"
   echo -e "\n  ${RED}${BOLD}WARNING: Consensus agent failed. Check logs/${LANG_SLUG}/consensus.log${NC}"
 fi
