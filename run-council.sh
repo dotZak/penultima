@@ -115,31 +115,46 @@ stop_monitor() {
   fi
 }
 
-# Summarize an agent's log — extract tool usage and token info
+# Summarize an agent's run from its JSON usage file
 summarize_log() {
   local log_file="$1"
   local agent_name="$2"
-  if [ ! -f "$log_file" ]; then return; fi
+  local json_file="${log_file%.log}.usage.json"
 
-  # Try to extract cost/token info from the log
-  local tokens=$(grep -oi '[0-9,]\+\s*tokens\?' "$log_file" 2>/dev/null | tail -1)
-  local cost=$(grep -oi '\$[0-9.]\+' "$log_file" 2>/dev/null | tail -1)
-  local tools_used=$(grep -ci 'tool\|WebSearch\|WebFetch\|Read\|Write\|Edit' "$log_file" 2>/dev/null || echo "?")
+  if [ ! -f "$json_file" ]; then return; fi
+  if ! command -v jq &> /dev/null; then return; fi
 
-  local summary=""
-  if [ -n "$cost" ]; then summary+=" cost:${cost}"; fi
-  if [ -n "$tokens" ]; then summary+=" (${tokens})"; fi
+  local cost=$(jq -r '.total_cost_usd // 0' "$json_file" 2>/dev/null)
+  local input_tok=$(jq -r '.usage.input_tokens // 0' "$json_file" 2>/dev/null)
+  local output_tok=$(jq -r '.usage.output_tokens // 0' "$json_file" 2>/dev/null)
+  local cache_read=$(jq -r '.usage.cache_read_input_tokens // 0' "$json_file" 2>/dev/null)
+  local duration=$(jq -r '.duration_ms // 0' "$json_file" 2>/dev/null)
+  local api_dur=$(jq -r '.duration_api_ms // 0' "$json_file" 2>/dev/null)
+  local turns=$(jq -r '.num_turns // 0' "$json_file" 2>/dev/null)
+  local searches=$(jq -r '[.modelUsage // {} | to_entries[] | .value.webSearchRequests // 0] | add // 0' "$json_file" 2>/dev/null)
 
-  if [ -n "$summary" ]; then
-    echo -e "    ${BLUE}└${NC}${summary}"
+  # Format duration
+  local dur_sec=$((duration / 1000))
+  local dur_human=$(seconds_to_human $dur_sec)
+
+  # Format cost
+  local cost_fmt
+  if command -v awk &> /dev/null; then
+    cost_fmt=$(echo "$cost" | awk '{printf "$%.4f", $1}')
+  else
+    cost_fmt="\$${cost}"
   fi
+
+  echo -e "    ${BLUE}└${NC} ${cost_fmt} │ ${input_tok}in + ${output_tok}out │ cache:${cache_read} │ ${turns} turns │ ${searches} searches │ ${dur_human}"
 }
 
 # Run a claude agent with retry on failure (including token limit)
+# Captures JSON usage data to logs/<lang>/<agent>.usage.json
 run_agent() {
   local prompt_file="$1"
   local agent_name="$2"
   local log_file="logs/${LANG_SLUG}/${agent_name}.log"
+  local json_file="logs/${LANG_SLUG}/${agent_name}.usage.json"
   local attempt=0
 
   mkdir -p "logs/${LANG_SLUG}"
@@ -160,15 +175,19 @@ run_agent() {
 IMPORTANT: A previous attempt to complete this task ran out of context. The partial output may exist at the expected output path. Please read it if it exists, pick up where it left off, and complete the remaining sections. Do not rewrite sections that are already complete — only fill in what is missing."
     fi
 
-    # Run claude and capture exit code
-    if claude -p "${prompt}" --allowedTools "${CLAUDE_TOOLS}" > "${log_file}" 2>&1; then
+    # Run claude with JSON output to capture usage data
+    if claude -p "${prompt}" --allowedTools "${CLAUDE_TOOLS}" --output-format json > "${json_file}" 2>"${log_file}"; then
+      # Extract text result into the log for human readability
+      if command -v jq &> /dev/null; then
+        jq -r '.result // empty' "${json_file}" >> "${log_file}" 2>/dev/null
+      fi
       return 0
     fi
 
     attempt=$((attempt + 1))
 
-    # Check if it was a token limit issue
-    if grep -qi "token\|context.*length\|context.*limit\|max.*tokens" "${log_file}" 2>/dev/null; then
+    # Check if it was a token limit issue (check both files)
+    if grep -qi "token\|context.*length\|context.*limit\|max.*tokens" "${json_file}" "${log_file}" 2>/dev/null; then
       echo -e "  ${YELLOW}⚠${NC}  ${agent_name} may have hit token limit — will retry with continuation"
     fi
 
