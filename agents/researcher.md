@@ -73,7 +73,7 @@ Produce a structured factual brief covering:
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
 2. Read the evidence files in `evidence/` for your language.
 3. Research {{LANGUAGE}} thoroughly using web search and your training knowledge. Prioritize primary sources.
 4. Compile your findings into a structured factual brief.

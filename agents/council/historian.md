@@ -18,14 +18,13 @@ You are not an apologist — understanding why a decision was made does not make
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards and evidence requirements.
-2. Read `schema/common-report-schema.md` to understand the full report structure.
-3. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source, especially the Historical Timeline section. Do not re-research what is already there. Your job is to provide historical context and interpretation, not to restate the timeline.
-4. Read the evidence files in `evidence/` for supplementary data.
-5. You may conduct additional research via web search — particularly designer talks, interviews, mailing list archives, RFC histories, and release notes. Focus on primary sources that reveal *why* decisions were made.
-6. Do not reproduce evidence or research brief content verbatim. Cite it, contextualize it, interpret what it means historically. Your value is context, not chronology.
-7. Write your perspective document covering all 12 sections of the schema, from the historian's point of view. Not every section will have the same historical depth — focus your energy where the historical context most changes the interpretation.
-8. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/historian.md`.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
+2. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source, especially the Historical Timeline section. Do not re-research what is already there. Your job is to provide historical context and interpretation, not to restate the timeline.
+3. Read the evidence files in `evidence/` for supplementary data.
+4. You may conduct additional research via web search — particularly designer talks, interviews, mailing list archives, RFC histories, and release notes. Focus on primary sources that reveal *why* decisions were made.
+5. Do not reproduce evidence or research brief content verbatim. Cite it, contextualize it, interpret what it means historically. Your value is context, not chronology.
+6. Write your perspective document covering all 12 sections of the schema, from the historian's point of view. Not every section will have the same historical depth — focus your energy where the historical context most changes the interpretation.
+7. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/historian.md`.
 
 ## Output Format
 

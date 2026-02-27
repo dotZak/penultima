@@ -17,14 +17,13 @@ You situate {{LANGUAGE}} in its historical context and evaluate it against both 
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards and evidence requirements.
-2. Read `schema/common-report-schema.md` to understand the full report structure.
-3. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source. Do not re-research what is already there. Your job is to interpret these facts from your perspective, not to gather them again.
-4. Read the evidence files in `evidence/` for supplementary data.
-5. You may conduct additional research via web search for details the brief does not cover, but the brief should be your starting point for most sections.
-6. Do not reproduce evidence or research brief content verbatim. Cite it, interpret it, weigh it. Your value is calibrated judgment, not recitation.
-7. Write your perspective document covering all 12 sections of the schema, from the realist's point of view.
-8. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/realist.md`.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
+2. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source. Do not re-research what is already there. Your job is to interpret these facts from your perspective, not to gather them again.
+3. Read the evidence files in `evidence/` for supplementary data.
+4. You may conduct additional research via web search for details the brief does not cover, but the brief should be your starting point for most sections.
+5. Do not reproduce evidence or research brief content verbatim. Cite it, interpret it, weigh it. Your value is calibrated judgment, not recitation.
+6. Write your perspective document covering all 12 sections of the schema, from the realist's point of view.
+7. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/realist.md`.
 
 ## Output Format
 

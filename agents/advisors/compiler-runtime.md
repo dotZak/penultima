@@ -24,7 +24,7 @@ You should also flag compiler/runtime-relevant claims in other sections — for 
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards.
+1. Your system prompt contains the project standards, evidence rules, and report schema — do not re-read `agents/base-context.md`.
 2. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` for the factual baseline.
 3. Read the five council member perspectives in `research/tier1/{{LANGUAGE_SLUG}}/council/`.
 4. Read the relevant evidence files in `evidence/`.

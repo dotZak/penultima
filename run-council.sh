@@ -6,6 +6,7 @@ LANGUAGE="$1"
 LANG_SLUG="$2"
 MAX_RETRIES=2
 CLAUDE_TOOLS="Read,Write,Edit,Bash,WebSearch,WebFetch"
+SKILL_FILE="skills/penultima-council/SKILL.md"
 
 # === Colors and formatting ===
 RED='\033[0;31m'
@@ -176,7 +177,13 @@ IMPORTANT: A previous attempt to complete this task ran out of context. The part
     fi
 
     # Run claude with JSON output to capture usage data
-    if claude -p "${prompt}" --allowedTools "${CLAUDE_TOOLS}" --output-format json > "${json_file}" 2>"${log_file}"; then
+    # Inject the shared skill context as system prompt to reduce per-agent file reads
+    local skill_args=()
+    if [ -f "${SKILL_FILE}" ]; then
+      skill_args=(--append-system-prompt-file "${SKILL_FILE}")
+    fi
+
+    if claude -p "${prompt}" --allowedTools "${CLAUDE_TOOLS}" "${skill_args[@]}" --output-format json > "${json_file}" 2>"${log_file}"; then
       # Extract text result into the log for human readability
       if command -v jq &> /dev/null; then
         jq -r '.result // empty' "${json_file}" >> "${log_file}" 2>/dev/null

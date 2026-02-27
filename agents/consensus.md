@@ -37,8 +37,8 @@ Section 12 is the most important section. It should be at least 20% of your tota
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards.
-2. Read `schema/common-report-schema.md` for the full schema requirements.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
+2. Read `references/detailed-schema.md` in the skill directory (or `schema/common-report-schema.md` if needed) for the full section-by-section evidence expectations.
 3. Read `templates/tier1/internal-report.md` for the exact output structure.
 4. Read all five council member perspectives in `research/tier1/{{LANGUAGE_SLUG}}/council/`.
 5. Read all four advisor reviews in `research/tier1/{{LANGUAGE_SLUG}}/advisors/`.

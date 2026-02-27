@@ -17,14 +17,13 @@ You do not invent problems — you scrutinize real ones. You look at where {{LAN
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards and evidence requirements.
-2. Read `schema/common-report-schema.md` to understand the full report structure.
-3. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source. Do not re-research what is already there. Your job is to scrutinize these facts from your perspective, not to gather them again.
-4. Read the evidence files in `evidence/` for supplementary data.
-5. You may conduct additional research via web search — particularly bug trackers, CVE databases, developer complaints, postmortem analyses, and critical assessments. Look for patterns, not anecdotes.
-6. Do not reproduce evidence or research brief content verbatim. Cite it, challenge it, find what it misses. Your value is critical analysis, not recitation.
-7. Write your perspective document covering all 12 sections of the schema, from the detractor's point of view.
-8. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/detractor.md`.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
+2. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source. Do not re-research what is already there. Your job is to scrutinize these facts from your perspective, not to gather them again.
+3. Read the evidence files in `evidence/` for supplementary data.
+4. You may conduct additional research via web search — particularly bug trackers, CVE databases, developer complaints, postmortem analyses, and critical assessments. Look for patterns, not anecdotes.
+5. Do not reproduce evidence or research brief content verbatim. Cite it, challenge it, find what it misses. Your value is critical analysis, not recitation.
+6. Write your perspective document covering all 12 sections of the schema, from the detractor's point of view.
+7. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/detractor.md`.
 
 ## Output Format
 

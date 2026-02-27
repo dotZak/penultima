@@ -18,14 +18,13 @@ You care about the things that don't show up in language specifications but domi
 
 ## Instructions
 
-1. Read `agents/base-context.md` for project standards and evidence requirements.
-2. Read `schema/common-report-schema.md` to understand the full report structure.
-3. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source, especially the Ecosystem Snapshot and Developer Experience Data sections. Do not re-research what is already there. Your job is to interpret these facts through a practitioner's lens.
-4. Read the evidence files in `evidence/` for supplementary data.
-5. You may conduct additional research via web search — particularly engineering blog posts, conference experience reports, postmortem analyses, and community forums where developers discuss real problems. The research brief gives you the facts; you supply the lived-experience interpretation.
-6. Do not reproduce evidence or research brief content verbatim. Cite it, react to it, add the practitioner's reality to it. Your value is practical experience, not recitation.
-7. Write your perspective document covering all 12 sections of the schema, from the practitioner's point of view. Sections 6 (Ecosystem), 8 (Developer Experience), and 9 (Performance) are likely your strongest contributions, but every section has a practitioner dimension.
-8. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/practitioner.md`.
+1. Your system prompt contains the project standards, evidence rules, and report schema. Do not re-read `agents/base-context.md` or `schema/common-report-schema.md` — that context is already loaded.
+2. Read the research brief at `research/tier1/{{LANGUAGE_SLUG}}/research-brief.md` — this is your primary factual source, especially the Ecosystem Snapshot and Developer Experience Data sections. Do not re-research what is already there. Your job is to interpret these facts through a practitioner's lens.
+3. Read the evidence files in `evidence/` for supplementary data.
+4. You may conduct additional research via web search — particularly engineering blog posts, conference experience reports, postmortem analyses, and community forums where developers discuss real problems. The research brief gives you the facts; you supply the lived-experience interpretation.
+5. Do not reproduce evidence or research brief content verbatim. Cite it, react to it, add the practitioner's reality to it. Your value is practical experience, not recitation.
+6. Write your perspective document covering all 12 sections of the schema, from the practitioner's point of view. Sections 6 (Ecosystem), 8 (Developer Experience), and 9 (Performance) are likely your strongest contributions, but every section has a practitioner dimension.
+7. Save your output to `research/tier1/{{LANGUAGE_SLUG}}/council/practitioner.md`.
 
 ## Output Format
 
